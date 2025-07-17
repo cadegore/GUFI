@@ -72,6 +72,7 @@ OF SUCH DAMAGE.
 
 #include "gufi_query/PoolArgs.h"
 #include "gufi_query/external.h"
+#include "gufi_query/per_thread_kv.h"
 
 /* don't introduce undefined behavior by casting function when passing into trie_insert */
 static void str_free_wrapper(void *str) {
@@ -159,9 +160,9 @@ int PoolArgs_init(PoolArgs_t *pa, struct input *in, pthread_mutex_t *global_mute
         ta->user_strs = trie_alloc();
 
         /*
-         * {s} defaults to the source tree path - can change, but generally do not
+         * {s} defaults to the source tree path - can change, but generally will not
          *
-         * maybe move this into processdir?
+         * maybe move this into processdir to reset the value every time?
          */
         if (in->sql_format.source_prefix.data && in->sql_format.source_prefix.len) {
             trie_insert(ta->user_strs, "s", 1, &in->sql_format.source_prefix, NULL);
@@ -171,6 +172,18 @@ int PoolArgs_init(PoolArgs_t *pa, struct input *in, pthread_mutex_t *global_mute
                                     ta->user_strs, &setstr, NULL, NULL) != SQLITE_OK) {
             fprintf(stderr, "Error: Could not add setstr to sqlite\n");
             break;
+        }
+
+        /* create a simple kv table and functions to set and get */
+        if (ptkv_init(ta->outdb) != SQLITE_OK) {
+            break;
+        }
+
+        /* set key s with the source tree path - can change, but generally will not */
+        if (in->sql_format.source_prefix.data && in->sql_format.source_prefix.len) {
+            if (ptkv_set_internal(i, ta->outdb, "s", 1, &in->sql_format.source_prefix) != SQLITE_OK) {
+                break;
+            }
         }
 
         if (sqlite3_create_function(ta->outdb, "thread_id", 0, SQLITE_UTF8,
@@ -276,6 +289,8 @@ int PoolArgs_init(PoolArgs_t *pa, struct input *in, pthread_mutex_t *global_mute
 void PoolArgs_fin(PoolArgs_t *pa, const size_t allocated) {
     for(size_t i = 0; i < allocated; i++) {
         ThreadArgs_t *ta = &pa->ta[i];
+
+        ptkv_fini(ta->outdb);
 
         closedb(ta->outdb);
 

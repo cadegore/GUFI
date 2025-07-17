@@ -75,6 +75,7 @@ OF SUCH DAMAGE.
 #include "gufi_query/PoolArgs.h"
 #include "gufi_query/external.h"
 #include "gufi_query/gqw.h"
+#include "gufi_query/per_thread_kv.h"
 #include "gufi_query/process_queries.h"
 #include "gufi_query/processdir.h"
 #include "gufi_query/query.h"
@@ -145,7 +146,6 @@ static int collect_dir_inodes(void *args, int count, char **data, char **columns
 
     return 0;
 }
-
 
 int processdir(QPTPool_t *ctx, const size_t id, void *data, void *args) {
     /* Not checking arguments */
@@ -218,6 +218,10 @@ int processdir(QPTPool_t *ctx, const size_t id, void *data, void *args) {
 
         trie_insert(ta->user_strs, "n", 1, (void *) &n, NULL);
         trie_insert(ta->user_strs, "i", 1, (void *) &i, NULL);
+
+        ptkv_set_internal(id, db, "n", 1, &n); /* ignore errors? */
+        ptkv_set_internal(id, db, "i", 1, &i); /* ignore errors? */
+
         /* ********************************************** */
 
         int recs = 1;

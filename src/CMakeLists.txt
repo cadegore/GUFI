@@ -185,6 +185,7 @@ add_library(gufi_query_lib OBJECT
   gufi_query/external.c
   gufi_query/gqw.c
   gufi_query/handle_sql.c
+  gufi_query/per_thread_kv.c
   gufi_query/process_queries.c
   gufi_query/processdir.c
   gufi_query/query.c
