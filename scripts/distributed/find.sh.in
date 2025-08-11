@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # This file is part of GUFI, which is part of MarFS, which is released
 # under the BSD license.
 #
@@ -60,39 +61,8 @@
 
 
 
-configure_file(gufi_distributed.py gufi_distributed.py COPYONLY)
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/gufi_distributed.py"
-  DESTINATION "${SERVER_LIB}"
-  COMPONENT Server)
+root="$1"
+level="$2"
 
-configure_file(find.sh.in find.sh @ONLY)
-install(PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/find.sh"
-  DESTINATION "${SERVER_BIN}"
-  COMPONENT Server)
-
-# executables
-set(DISTRIBUTED
-  gufi_dir2index
-  gufi_dir2trace
-  gufi_query
-  gufi_rollup
-  gufi_treesummary_all
-  gufi_unrollup
-)
-
-foreach(TOOL ${DISTRIBUTED})
-  configure_file("${TOOL}" "${TOOL}" COPYONLY)
-
-  set(SBATCH "${TOOL}.sbatch")
-  configure_file("template.sbatch.in" "${SBATCH}" @ONLY)
-
-  install(PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/${TOOL}"
-    DESTINATION "${SERVER_BIN}"
-    COMPONENT Server
-    RENAME "${TOOL}_distributed")
-
-  install(PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/${SBATCH}"
-    DESTINATION "${SERVER_BIN}"
-    COMPONENT Server
-    RENAME "${TOOL}.sbatch")
-endforeach()
+# can't use %P to remove input path in macos and Alpine Linux
+@FIND@ -H "${root}/" -mindepth "${level}" -maxdepth "${level}" -type d | @SED@ "s|^${root}/||g"
