@@ -208,6 +208,7 @@ endif()
 
 # Python3 is required
 find_package(Python3 REQUIRED COMPONENTS Interpreter REQUIRED)
+set(PYTHON3_INTERPRETER "${Python3_EXECUTABLE}")
 
 # require find_program to return executables with -r+x permissions
 if (POLICY CMP0109)

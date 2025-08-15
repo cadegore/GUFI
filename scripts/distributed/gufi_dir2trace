@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!@PYTHON3_INTERPRETER@
 # This file is part of GUFI, which is part of MarFS, which is released
 # under the BSD license.
 #
