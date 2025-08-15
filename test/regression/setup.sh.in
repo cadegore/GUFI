@@ -154,6 +154,7 @@ GUFI_DU="${GUFI_TOOL} du"
 GUFI_FIND="${GUFI_TOOL} find"
 GUFI_GETFATTR="${GUFI_TOOL} getfattr"
 GUFI_INDEX2DIR="@CMAKE_BINARY_DIR@/src/gufi_index2dir"
+GUFI_JAIL="@CMAKE_BINARY_DIR@/scripts/gufi_jail"
 GUFI_LS="${GUFI_TOOL} ls"
 GUFI_QUERY="@CMAKE_BINARY_DIR@/src/gufi_query"
 GUFI_QUERY_PY="${GUFI_TOOL} query.py"
@@ -244,6 +245,7 @@ replace() {
     s/${GUFI_FIND//\//\\/}/gufi_find/g;
     s/${GUFI_GETFATTR//\//\\/}/gufi_getfattr/g;
     s/${GUFI_INDEX2DIR//\//\\/}/gufi_index2dir/g;
+    s/${GUFI_JAIL//\//\\/}/gufi_jail/g;
     s/${GUFI_LS//\//\\/}/gufi_ls/g;
     s/${GUFI_QUERY//\//\\/}/gufi_query/g;
     s/${GUFI_QUERY_PY//\//\\/}/gufi_query.py/g;
