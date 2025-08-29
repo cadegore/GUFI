@@ -150,7 +150,7 @@ int print_parallel(void *args, int count, char **data, char **columns) {
             fwrite(data[last], sizeof(char), lens[last], print->outfile);
         }
 
-        if (!types) {
+        if (!types && !print->suppress_newline) {
             fwrite("\n", sizeof(char), 1, print->outfile);
         }
 
@@ -196,7 +196,7 @@ int print_parallel(void *args, int count, char **data, char **columns) {
             }
         }
 
-        if (!types) {
+        if (!types && !print->suppress_newline) {
             /* replace final delimiter with newline */
             buf[filled - 1] = '\n';
         }

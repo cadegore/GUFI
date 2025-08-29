@@ -296,6 +296,9 @@ struct input {
 
    /* A handle to a plugin shared library, or NULL if no plugin is being used. */
    void *plugin_handle;
+
+   /* only used by parallel_find */
+   mode_t type;
 };
 
 struct input *input_init(struct input *in);
